@@ -24,7 +24,7 @@ class DefaultController extends Controller
             ->latest()
             ->first();
 
-        return success($item->items);
+        return success($item->items ?? []);
     }
 
     /**
