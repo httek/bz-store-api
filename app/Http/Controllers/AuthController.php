@@ -27,9 +27,8 @@ class AuthController extends Controller
 
             $where = $session->only(['openid'])->toArray();
             if (! $member = Member::where($where)->first()) {
-                $member = Member::create(
-                    $session->only(['openid', 'unionid'])->toArray()
-                );
+                $meta = $session->only(['openid', 'unionid'])->toArray();
+                $member = Member::create($meta);
             }
 
             return success($member->withToken());
