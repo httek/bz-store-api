@@ -18,13 +18,13 @@ class DefaultController extends Controller
     public function swipers(Request $request): JsonResponse
     {
         $where = ['position' => $request->input('position', 0)];
-        $items = Swiper::where($where)
+        $item = Swiper::where($where)
             ->select(['style', 'items', 'position'])
             ->avaliable()
             ->latest()
-            ->get();
+            ->first();
 
-        return success($items);
+        return success($item->items);
     }
 
     /**
