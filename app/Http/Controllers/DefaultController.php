@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Block;
 use App\Models\Category;
+use App\Models\Config;
 use App\Models\Swiper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,14 +18,9 @@ class DefaultController extends Controller
      */
     public function swipers(Request $request): JsonResponse
     {
-        $where = ['position' => $request->input('position', 0)];
-        $item = Swiper::where($where)
-            ->select(['style', 'items', 'position'])
-            ->avaliable()
-            ->latest()
-            ->first();
+        $swipers = Config::where('key', 'swiper.mapp.home')->first();
 
-        return success($item->items ?? []);
+        return success($swipers->value ?? []);
     }
 
     /**
