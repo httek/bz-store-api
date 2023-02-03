@@ -27,6 +27,17 @@ class DefaultController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
+    public function navs(Request $request): JsonResponse
+    {
+        $navs = Config::where('key', 'nav.home')->first();
+
+        return success($navs->value ?? []);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function categories(Request $request)
     {
         $items = Category::with('children')

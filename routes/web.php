@@ -20,5 +20,6 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 $router->group(['prefix' => '/'], function () use ($router) {
     $router->get('categories', 'DefaultController@categories');
     $router->get('swipers', 'DefaultController@swipers');
+    $router->get('navs', 'DefaultController@navs');
     $router->get('blocks', 'DefaultController@blocks');
 });
