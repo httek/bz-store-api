@@ -18,7 +18,7 @@ class DefaultController extends Controller
      */
     public function swipers(Request $request): JsonResponse
     {
-        $swipers = Config::where('key', 'swiper.mapp.home')->first();
+        $swipers = Config::where('key', 'swiper.home')->first();
 
         return success($swipers->value ?? []);
     }
