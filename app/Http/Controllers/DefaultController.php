@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Block;
 use App\Models\Category;
 use App\Models\Config;
-use App\Models\Swiper;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -57,9 +57,23 @@ class DefaultController extends Controller
     {
         $where = ['position' => $request->input('position', 0), 'status' => 1];
         $items  = Block::where($where)
-            ->whereRaw(DB::raw("NOW() between visible_begin and visible_ending"))
+            ->where(function (Builder $query) {
+                $query->whereNull('deadline_at')
+                    ->orWhereRaw(DB::raw("deadline_at > NOW()"));
+            })
             ->latest('sequence')
             ->get();
+
+        return success($items);
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function blockItems(int $id): JsonResponse
+    {
+        $items = [];
 
         return success($items);
     }
