@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Block extends Model
 {
+
+    protected $visible = ['id', 'name', 'cover', 'meta'];
+    
     /**
      * @var string[]
      */
@@ -26,4 +29,5 @@ class Block extends Model
             ->where('status', 1)
             ->get();
     }
+
 }
