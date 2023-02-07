@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Goods;
+use App\Http\Requests\Goods\Search;
 
 class GoodsController extends Controller
 {
@@ -11,20 +13,36 @@ class GoodsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Search $search)
     {
-        //
-    }
+        $query = Goods::with([]);
+        if ($category = $search->input('category')) {
+            $query->where('category_id', $category);
+        } else if ($parentCategory = $search->input('parent_category')) {
+            $query->whereIn('category_id', Category::where('parent_id', $parentCategory)->pluck('id')->toArray());
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        $sortFunc = 'latest';
+        $sortFiled = 'sequence';
+        if ($st = $search->input('sortType', 'latest')) {
+            if (in_array($st, ['latest', 'oldest'])) {
+                $sortFunc = $st;
+            }
+        }
+
+        $sf = $search->input('sortFiled', 'sequence');
+        if (in_array($sf, ['sequence', 'sold', 'sale_price'])) {
+            $sortFiled = $sf;
+        }
+
+        if ($name = $search->input('name')) {
+            $query->where('name', 'like', "%{$name}%");
+        }
+
+        $items = $query->{$sortFunc}($sortFiled)
+            ->paginate($this->getPageSize($search));
+
+        return success($items);
     }
 
     /**
@@ -35,29 +53,11 @@ class GoodsController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+        $item = Goods::with([])
+            ->where('id', $id)
+            ->firstOrFail();
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return success($item);
     }
 }

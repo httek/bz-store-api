@@ -50,6 +50,19 @@ class DefaultController extends Controller
     }
 
     /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function childCategories(int $id)
+    {
+        $item = Category::with('children')
+            ->whereStatus(1)
+            ->findOrFail($id);
+
+        return success($item);
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse
      */

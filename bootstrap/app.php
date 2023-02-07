@@ -88,6 +88,13 @@ $app->singleton(
  $app->register(Anik\Form\FormRequestServiceProvider::class);
  $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 
+
+// Rebind
+$app->bind(
+    Illuminate\Pagination\LengthAwarePaginator::class,
+    App\Extend\Paginator::class
+);
+
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
