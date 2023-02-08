@@ -48,7 +48,7 @@ $router->group(['prefix' => 'me'], function () use ($router) {
 
     $router->group(['prefix' => 'favorite'], function () use ($router) {
         $router->get('', 'UserFavoriteController@index');
-        $router->post('', 'UserFavoriteController@store');
-        $router->delete('{id}', 'UserFavoriteController@delete');
+        $router->post('nice', 'UserFavoriteController@store');
+        $router->delete('{id}', 'UserFavoriteController@destroy');
     });
 });

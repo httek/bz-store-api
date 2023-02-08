@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Goods;
 use App\Http\Requests\Goods\Search;
+use Illuminate\Support\Facades\DB;
 
 class GoodsController extends Controller
 {
@@ -36,7 +37,8 @@ class GoodsController extends Controller
         }
 
         if ($name = $search->input('name')) {
-            $query->where('name', 'like', "%{$name}%");
+            $query->where('name', 'like', "%{$name}%")
+                ->orWhereRaw(DB::raw("JSON_OVERLAPS(tags, '\"${name}\"')"));
         }
 
         $items = $query->{$sortFunc}($sortFiled)

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserFavorite;
 use Illuminate\Http\Request;
 
 class UserFavoriteController extends Controller
@@ -11,9 +12,26 @@ class UserFavoriteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $items = UserFavorite::where('user_favorites.user_id', $request->user()->id ?? 0)
+            ->where('goods.status', 2)
+            ->leftJoin('goods', 'goods.id', '=', 'user_favorites.goods_id')
+            ->select([
+                'user_favorites.id',
+                'goods.id as goods_id',
+                'goods.badge',
+                'goods.uuid',
+                'goods.slogan',
+                'goods.sale_price',
+                'goods.origin_price',
+                'goods.covers',
+                'goods.material',
+                'goods.sold',
+            ])
+            ->paginate($this->getPageSize());
+
+        return success($items);
     }
 
     /**
@@ -24,30 +42,17 @@ class UserFavoriteController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $this->validate($request, ['goods_id' => 'required|integer']);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $where = ['user_id' => $request->user()->id ?? 0, 'goods_id' => $request->input('goods_id', 0)];
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        if ($item = UserFavorite::where($where)->withTrashed()->first()) {
+            $item->restore();
+        } else {
+            $item = UserFavorite::create($where);
+        }
+
+        return success($item);
     }
 
     /**
@@ -56,8 +61,12 @@ class UserFavoriteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, int $id)
     {
-        //
+        UserFavorite::where('id', $id)
+            ->where('user_id', $request->user()->id ?? 0)
+            ->delete();
+
+        return success();
     }
 }
