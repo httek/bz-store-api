@@ -18,9 +18,9 @@ class UserCartController extends Controller
      */
     public function index(Request $request)
     {
-        $query = UserCart::with([])
+        $query = Goods::with([])
             ->where('user_id', $request->user()->id ?? 0)
-            ->leftJoin('goods', 'goods.id', '=', 'user_carts.goods_id')
+            ->leftJoin('user_carts', 'goods.id', '=', 'user_carts.goods_id')
             ->latest('user_carts.id')
             ->select([
                 'user_carts.id',
@@ -50,9 +50,7 @@ class UserCartController extends Controller
         foreach ($items->groupBy('store_id') as $group => $values) {
             $result['items'][] = [
                 'store' => $stores->where('id', $group)->first(),
-                'items' => $values->map(function ($item) {
-                    return new Goods($item->toArray());
-                })
+                'items' => $values
             ];
         }
 
