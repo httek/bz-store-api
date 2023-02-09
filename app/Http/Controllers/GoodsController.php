@@ -16,7 +16,7 @@ class GoodsController extends Controller
      */
     public function index(Search $search)
     {
-        $query = Goods::with([]);
+        $query = Goods::with(['store']);
         if ($category = $search->input('category')) {
             $query->where('category_id', $category);
         } else if ($parentCategory = $search->input('parent_category')) {
@@ -55,7 +55,7 @@ class GoodsController extends Controller
      */
     public function show($id)
     {
-        $item = Goods::with([])
+        $item = Goods::with(['store'])
             ->where('id', $id)
             ->firstOrFail();
 

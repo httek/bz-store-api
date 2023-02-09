@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Goods;
+use App\Models\Store;
+use App\Models\UserCart;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserCartController extends Controller
 {
@@ -11,9 +16,47 @@ class UserCartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = UserCart::with([])
+            ->where('user_id', $request->user()->id ?? 0)
+            ->leftJoin('goods', 'goods.id', '=', 'user_carts.goods_id')
+            ->latest('user_carts.id')
+            ->select([
+                'user_carts.id',
+                'goods.id  as goods_id',
+                'goods.name',
+                'goods.slogan',
+                'goods.material',
+                'user_carts.total',
+                'goods.sale_price',
+                'goods.covers',
+                'goods.store_id',
+            ]);
+
+        if ($status = $request->input('status', -1) >= 0) {
+            $query->where('status', $status);
+        }
+
+        $items = $query->get();
+        $stores = Store::whereIn('id', $items->pluck('store_id'))
+            ->select(['id', 'name', 'cover'])
+            ->get();
+
+        $result = [
+            'count' => $items->count(),
+            'items' => []
+        ];
+        foreach ($items->groupBy('store_id') as $group => $values) {
+            $result['items'][] = [
+                'store' => $stores->where('id', $group)->first(),
+                'items' => $values->map(function ($item) {
+                    return new Goods($item->toArray());
+                })
+            ];
+        }
+
+        return success($result);
     }
 
     /**
@@ -24,30 +67,28 @@ class UserCartController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $meta = $this->validate($request, ['goods_id' => 'required']);
+        $meta['user_id'] = $request->user()->id ?? 0;
+        $total = $request->input('total', 1);
+        $op = $request->input('op', 1);
+        /** @var Model $item */
+        if ($item = UserCart::where($meta)->first()) {
+            if ($op) {
+                $item->update(['total' => DB::raw("total + {$total}")]);
+            } else {
+                if ($item->total - $total <= 0) {
+                    $item->delete();
+                } else {
+                    $item->update(['total' => DB::raw("total - {$total}")]);
+                }
+            }
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        else if ($op) {
+            $item = UserCart::create($meta += ['total' => $total]);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return success();
     }
 
     /**
@@ -58,6 +99,8 @@ class UserCartController extends Controller
      */
     public function destroy($id)
     {
-        //
+        UserCart::destroy($id);
+
+        return success();
     }
 }
