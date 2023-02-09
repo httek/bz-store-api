@@ -6,8 +6,10 @@ use App\Models\Block;
 use App\Models\BlockResource;
 use App\Models\Category;
 use App\Models\Config;
+use App\Models\Goods;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -85,12 +87,14 @@ class DefaultController extends Controller
      * @param int $id
      * @return JsonResponse
      */
-    public function blockItems(int $id): JsonResponse
+    public function blockItems(int $id)
     {
-        $items = BlockResource::with([])
-            ->leftJoin('goods', 'goods.id', '=', 'block_resources.subject')
+        /** @var LengthAwarePaginator $items */
+
+        $items = Goods::with([])
+            ->leftJoin('block_resources', 'goods.id', '=', 'block_resources.subject')
             ->select([
-                'goods.id  as goods_id',
+                'goods.id',
                 'goods.name',
                 'goods.sale_price',
                 'goods.covers',
