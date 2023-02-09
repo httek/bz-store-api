@@ -68,21 +68,12 @@ class UserCartController extends Controller
         $meta = $this->validate($request, ['goods_id' => 'required']);
         $meta['user_id'] = $request->user()->id ?? 0;
         $total = $request->input('total', 1);
-        $op = $request->input('op', 1);
         /** @var Model $item */
         if ($item = UserCart::where($meta)->first()) {
-            if ($op) {
-                $item->update(['total' => DB::raw("total + {$total}")]);
-            } else {
-                if ($item->total - $total <= 0) {
-                    $item->delete();
-                } else {
-                    $item->update(['total' => DB::raw("total - {$total}")]);
-                }
-            }
+            $item->update(['total' => $total]);
         }
 
-        else if ($op) {
+        else {
             $item = UserCart::create($meta += ['total' => $total]);
         }
 
