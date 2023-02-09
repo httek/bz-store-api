@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Block;
+use App\Models\BlockResource;
 use App\Models\Category;
 use App\Models\Config;
 use Illuminate\Database\Eloquent\Builder;
@@ -86,7 +87,20 @@ class DefaultController extends Controller
      */
     public function blockItems(int $id): JsonResponse
     {
-        $items = [];
+        $items = BlockResource::with([])
+            ->leftJoin('goods', 'goods.id', '=', 'block_resources.subject')
+            ->select([
+                'goods.id  as goods_id',
+                'goods.name',
+                'goods.sale_price',
+                'goods.covers',
+                'goods.store_id',
+                'goods.slogan',
+                'goods.material',
+            ])
+            ->latest('block_resources.sequence')
+            ->where('block_resources.block_id', $id)
+            ->paginate($this->getPageSize());
 
         return success($items);
     }

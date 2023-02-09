@@ -23,6 +23,7 @@ $router->group(['prefix' => '/'], function () use ($router) {
     $router->get('swipers', 'DefaultController@swipers');
     $router->get('navs', 'DefaultController@navs');
     $router->get('blocks', 'DefaultController@blocks');
+    $router->get('blocks/{id:[\d]+}', 'DefaultController@blockItems');
 
     $router->get('goods', 'GoodsController@index');
     $router->get('goods/{id:[\d]+}', 'GoodsController@show');

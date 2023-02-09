@@ -26,12 +26,12 @@ class UserCartController extends Controller
                 'user_carts.id',
                 'goods.id  as goods_id',
                 'goods.name',
-                'goods.slogan',
-                'goods.material',
-                'user_carts.total',
                 'goods.sale_price',
                 'goods.covers',
                 'goods.store_id',
+                'goods.slogan',
+                'goods.material',
+                'user_carts.total',
             ]);
 
         if ($status = $request->input('status', -1) >= 0) {
