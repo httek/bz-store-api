@@ -36,7 +36,7 @@ $router->group(['prefix' => 'me'], function () use ($router) {
         $router->get('', 'UserCartController@index');
         $router->get('calc/{id}', 'UserCartController@calc');
         $router->post('', 'UserCartController@store');
-        $router->delete('{id}', 'UserCartController@delete');
+        $router->delete('{id}', 'UserCartController@destroy');
     });
 
     $router->group(['prefix' => 'transaction'], function () use ($router) {
