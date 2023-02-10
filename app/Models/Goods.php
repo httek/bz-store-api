@@ -8,7 +8,7 @@ class Goods extends Model
 {
     protected $guarded = [];
 
-    protected $casts = ['tags' => 'array', 'covers' => 'array'];
+    protected $casts = ['tags' => 'array', 'covers' => 'array', 'detail' => 'array'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
