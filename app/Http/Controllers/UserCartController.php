@@ -92,6 +92,35 @@ class UserCartController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param string $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function calc(Request $request, string $id)
+    {
+        $id = explode(',', $id);
+        $selected = Goods::with([])
+            ->leftJoin('user_carts', 'goods.id', '=', 'user_carts.goods_id')
+            ->whereIn('user_carts.id', $id)
+            ->select([
+                'user_carts.id',
+                'goods.sale_price',
+                'user_carts.total'
+            ])
+            ->get();
+
+        $total = 0;
+        foreach ($selected as $item) {
+            $total += $item->sale_price * $item->total;
+        }
+
+        return success([
+            'ids' => $selected->pluck('id'),
+            'total' => $total
+        ]);
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

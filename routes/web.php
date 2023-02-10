@@ -34,6 +34,7 @@ $router->group(['prefix' => 'me'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
     $router->group(['prefix' => 'cart'], function () use ($router) {
         $router->get('', 'UserCartController@index');
+        $router->get('calc/{id}', 'UserCartController@calc');
         $router->post('', 'UserCartController@store');
         $router->delete('{id}', 'UserCartController@delete');
     });
