@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Goods;
 use App\Http\Requests\Goods\Search;
+use App\Models\UserFavorite;
+use App\Models\UserHistory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class GoodsController extends Controller
@@ -38,7 +41,7 @@ class GoodsController extends Controller
 
         if ($name = $search->input('name')) {
             $query->where('name', 'like', "%{$name}%")
-                ->orWhereRaw(DB::raw("JSON_OVERLAPS(tags, '\"${name}\"')"));
+                ->orWhereRaw(DB::raw("JSON_OVERLAPS(tags, '\"{$name}\"')"));
         }
 
         $items = $query->{$sortFunc}($sortFiled)
@@ -53,12 +56,20 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $item = Goods::with(['store'])
+        $item = Goods::with(['store', 'delivery'])
             ->where('id', $id)
             ->firstOrFail();
 
+        $favorite = ['user_id' => $request->user()->id ?? 0, 'goods_id' => $id];
+        $item->user_favorite = UserFavorite::where($favorite)->exists();
+        $item->review = [
+            'count' => $item->review()->count(),
+            'items' => $item->review()->limit(3)->get()
+        ];
+
+        UserHistory::firstOrCreate($favorite);
 
         return success($item);
     }
