@@ -66,7 +66,7 @@ class GoodsController extends Controller
         $item->user_favorite = UserFavorite::where($favorite)->exists();
         $item->review = [
             'count' => $item->review()->count(),
-            'items' => $item->review()->limit(3)->get()
+            'items' => $item->review()->limit(2)->get()
         ];
 
         UserHistory::firstOrCreate($favorite);
