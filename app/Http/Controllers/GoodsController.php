@@ -34,7 +34,7 @@ class GoodsController extends Controller
             }
         }
 
-        $sf = $search->input('sortFiled', 'sequence');
+        $sf = $search->input('sort', 'sequence');
         if (in_array($sf, ['sequence', 'sold', 'sale_price'])) {
             $sortFiled = $sf;
         }
