@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserReview extends Model
 {
-    protected $casts = ['images' => 'array'];
+    protected $casts = ['images' => 'json'];
 
     public function user()
     {
