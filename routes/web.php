@@ -39,6 +39,14 @@ $router->group(['prefix' => 'me'], function () use ($router) {
         $router->delete('{id}', 'UserCartController@destroy');
     });
 
+    $router->group(['prefix' => 'address'], function () use ($router) {
+        $router->get('', 'UserAddressController@index');
+        $router->get('{id}', 'UserAddressController@show');
+        $router->post('', 'UserAddressController@store');
+        $router->post('{id}', 'UserAddressController@update');
+        $router->delete('{id}', 'UserAddressController@destroy');
+    });
+
     $router->group(['prefix' => 'transaction'], function () use ($router) {
         $router->get('', 'UserTransactionController@index');
         $router->post('', 'UserTransactionController@store');

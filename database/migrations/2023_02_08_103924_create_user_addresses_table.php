@@ -23,6 +23,7 @@ class CreateUserAddressesTable extends Migration
             $table->string('detail', 160)->nullable();
             $table->unsignedTinyInteger('status')->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
