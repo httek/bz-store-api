@@ -44,7 +44,7 @@ class UserAddressController extends Controller
 
         $validated['user_id'] = $request->user()->id ?? 0;
         $item = UserAddress::create($validated);
-        if ($validated['defaults']) {
+        if ($validated['defaults'] ?? 0) {
             UserAddress::whereUserId($request->user()->id ?? 0)
                 ->where('id', '!=', $item->id)
                 ->update(['defaults' => 0]);
