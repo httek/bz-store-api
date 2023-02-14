@@ -42,6 +42,7 @@ class UserAddressController extends Controller
             return fail('目前仅限北京地区');
         }
 
+        $validated['user_id'] = $request->user()->id ?? 0;
         $item = UserAddress::create($validated);
         if ($validated['defaults']) {
             UserAddress::whereUserId($request->user()->id ?? 0)
