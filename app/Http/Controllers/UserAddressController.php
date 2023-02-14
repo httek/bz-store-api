@@ -17,6 +17,7 @@ class UserAddressController extends Controller
     {
         $items = UserAddress::whereUserId($request->user()->id ?? 0)
             ->latest('defaults')
+            ->latest()
             ->get();
 
         return success($items);
