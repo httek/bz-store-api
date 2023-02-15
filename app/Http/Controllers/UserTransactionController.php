@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
+use App\Models\UserTransaction;
 use Illuminate\Http\Request;
 
 class UserTransactionController extends Controller
@@ -11,9 +13,20 @@ class UserTransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $where = [];
+        if (($status = $request->input('status', -1)) >= 0) {
+            $where['status'] = $status;
+        }
+
+        $items = Transaction::with('items')
+            ->where('root', 0)
+            ->where($where)
+            ->oldest('status')
+            ->paginate($this->getPageSize());
+
+        return success($items);
     }
 
     /**

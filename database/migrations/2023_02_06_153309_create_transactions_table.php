@@ -15,6 +15,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger('root')->default(0);
             $table->unsignedBigInteger('parent_id')->nullable()->index();
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('store_id')->index();
