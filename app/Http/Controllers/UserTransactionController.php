@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Goods;
 use App\Models\Transaction;
+use App\Models\UserAddress;
 use App\Models\UserTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,8 @@ class UserTransactionController extends Controller
 
     public function prePost(Request $request)
     {
+
+        $id = explode(',', $request->input('id', ''));
         // if carts
         $items = [];
         if ($request->has('carts')) {
@@ -41,7 +44,7 @@ class UserTransactionController extends Controller
                 ->leftJoin('user_carts', 'user_carts.goods_id', 'goods.id')
                 ->leftJoin('stores', 'stores.id', 'goods.store_id')
                 ->where('user_carts.user_id', $request->user()->id ?? 0)
-                ->whereIn('user_carts.id', $request->input('id', []))
+                ->whereIn('user_carts.id', $id)
                 ->select([
                     'goods.id',
                     'goods.name',
@@ -64,7 +67,7 @@ class UserTransactionController extends Controller
             $total = $request->input('total', 1);
             $items = Goods::with([])
                 ->leftJoin('stores', 'stores.id', 'goods.store_id')
-                ->whereIn('goods.id', $request->input('id', []))
+                ->whereIn('goods.id', $id)
                 ->select([
                     'goods.id',
                     'goods.name',
@@ -82,13 +85,19 @@ class UserTransactionController extends Controller
                 ->groupBy('store_name');
         }
 
-        $results = [];
+        $results = ['total' => 0];
         foreach ($items as $storeName => $item) {
-            $results[] = [
+            $results['items'][] = [
                 'store' => $storeName,
                 'items' => $item
             ];
+
+            $results['total'] += $item->sum('total_amount');
         }
+
+        $results['address'] = UserAddress::where('user_id', $request->user()->id ?? 0)
+            ->latest('defaults')
+            ->get();
 
         return success($results);
     }
