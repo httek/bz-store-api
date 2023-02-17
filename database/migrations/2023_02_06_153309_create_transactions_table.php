@@ -36,6 +36,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedTinyInteger('maintain')->default(0)->comment('是否存在售后');
             $table->json('express')->nullable()->comment('配送信息');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

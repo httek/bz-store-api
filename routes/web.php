@@ -49,9 +49,10 @@ $router->group(['prefix' => 'me'], function () use ($router) {
 
     $router->group(['prefix' => 'transaction'], function () use ($router) {
         $router->get('', 'UserTransactionController@index');
+        $router->get('{id:[\d]+}', 'UserTransactionController@show');
         $router->post('', 'UserTransactionController@store');
         $router->get('pre', 'UserTransactionController@prePost');
-        $router->delete('{id}', 'UserTransactionController@delete');
+        $router->delete('{id:[\d]+}', 'UserTransactionController@delete');
         $router->post('{id:[\d]+}', 'UserTransactionController@update');
         $router->post('{id:[\d+]}/pay', 'UserTransactionController@toPay');
     });
