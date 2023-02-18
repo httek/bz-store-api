@@ -28,7 +28,7 @@ class UserTransactionController extends Controller
             $where['status'] = $status;
         }
 
-        $items = Transaction::with('items')
+        $items = Transaction::with(['items', 'store'])
             ->select()
             ->where('root', 0)
             ->where($where)

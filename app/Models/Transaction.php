@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\SerializeDate;
 use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    use SerializeDate;
 
     public static function makeTradeNo(string $prefix = 'S')
     {
@@ -36,6 +38,11 @@ class Transaction extends Model
     public function children()
     {
         return $this->hasMany(self::class, 'transaction_id', 'id');
+    }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class, 'id', 'store_id');
     }
 
     /**
