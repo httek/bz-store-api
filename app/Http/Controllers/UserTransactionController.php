@@ -185,7 +185,7 @@ class UserTransactionController extends Controller
                         'goods_id' => $item->id ?? 0,
                         'sale_price' => $item->sale_price ?? 0,
                         'total' => $totalInput[$item->id] ?? 1,
-                        'goods' => $item->toJson(),
+                        'goods' => $item,
                         'created_at' => Carbon::now()->toDateTimeString()
                     ]);
                 }
