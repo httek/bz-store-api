@@ -13,11 +13,17 @@
 |
 */
 
+// 支付通知
+$router->post(
+    'event/wp/{id}',
+    'PaymentController@notify'
+);
+
 $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('code2session',  'AuthController@code2session');
 });
 
-$router->group(['prefix' => '/'], function () use ($router) {
+$router->group(['prefix' => '/', 'middleware' => 'auth'], function () use ($router) {
     $router->get('categories', 'DefaultController@categories');
     $router->get('categories/{id}', 'DefaultController@childCategories');
     $router->get('swipers', 'DefaultController@swipers');
@@ -30,7 +36,7 @@ $router->group(['prefix' => '/'], function () use ($router) {
 });
 
 
-$router->group(['prefix' => 'me'], function () use ($router) {
+$router->group(['prefix' => 'me', 'middleware' => 'auth'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
     $router->group(['prefix' => 'cart'], function () use ($router) {
         $router->get('', 'UserCartController@index');
@@ -54,7 +60,7 @@ $router->group(['prefix' => 'me'], function () use ($router) {
         $router->get('pre', 'UserTransactionController@prePost');
         $router->delete('{id:[\d]+}', 'UserTransactionController@delete');
         $router->post('{id:[\d]+}', 'UserTransactionController@update');
-        $router->post('{id:[\d+]}/pay', 'UserTransactionController@toPay');
+        $router->get('{id:[\d]+}/pay', 'UserTransactionController@toPay');
     });
 
     $router->group(['prefix' => 'favorite'], function () use ($router) {

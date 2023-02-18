@@ -66,5 +66,19 @@ return [
             'scopes' => ['snsapi_userinfo'],
             'callback' => '/examples/oauth_callback.php',
         ],
-    ]
+    ],
+
+    'mini_app' => [
+        'default' => [
+            'mch_id' => env('WECHAT_MERCHANT_ID'),
+            'app_id' => env('WECHAT_MINI_APP_APPID', ''),
+            'secret' => env('WECHAT_MINI_APP_SECRET', ''),
+            'token' => env('WECHAT_MINI_APP_TOKEN', ''),
+            'aes_key' => env('WECHAT_MINI_APP_AES_KEY', ''),
+            'http' => [
+                'timeout' => 5.0,
+                'base_uri' => 'https://api.weixin.qq.com/',
+            ],
+        ],
+    ],
 ];
