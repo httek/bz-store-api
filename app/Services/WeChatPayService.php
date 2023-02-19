@@ -164,7 +164,9 @@ class WeChatPayService extends Service
 
                     $order->update($up);
                     foreach ($order->children() as $child) {
+                        $up['status'] = 2;
                         $up['paid_amount'] = $child->amount;
+                        $up['paid_trade_no'] = $order->paid_trade_no;
                         $child->update($up);
                     }
 
