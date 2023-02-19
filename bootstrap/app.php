@@ -62,7 +62,7 @@ $app->singleton(
 
  $app->middleware([
      Nord\Lumen\Cors\CorsMiddleware::class,
-     App\Http\Middleware\ExampleMiddleware::class
+     App\Http\Middleware\Middleware::class
  ]);
 
  $app->routeMiddleware([
