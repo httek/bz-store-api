@@ -220,7 +220,7 @@ class UserTransactionController extends Controller
      */
     public function show($id)
     {
-        $item = Transaction::with(['items'])
+        $item = Transaction::with(['items', 'address'])
             ->whereUserId($this->getUserId())
             ->whereId($id)
             ->firstOrFail();
@@ -246,6 +246,15 @@ class UserTransactionController extends Controller
             'address_id' => 'nullable|integer',
             'status' => 'in:0,4' // 取消、收货
         ]);
+
+        $status = intval($request->input('status', -1));
+        switch ($status) {
+            case 0:
+                if ($item->status != 1) {
+                    return fail('当前订单不可取消');
+                }
+                break;
+        }
 
         $item->update($validated);
 

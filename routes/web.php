@@ -58,7 +58,7 @@ $router->group(['prefix' => 'me', 'middleware' => 'auth'], function () use ($rou
         $router->get('{id:[\d]+}', 'UserTransactionController@show');
         $router->post('', 'UserTransactionController@store');
         $router->get('pre', 'UserTransactionController@prePost');
-        $router->delete('{id:[\d]+}', 'UserTransactionController@delete');
+        $router->delete('{id:[\d]+}', 'UserTransactionController@destroy');
         $router->post('{id:[\d]+}', 'UserTransactionController@update');
         $router->get('{id:[\d]+}/pay', 'UserTransactionController@toPay');
     });

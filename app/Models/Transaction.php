@@ -23,6 +23,11 @@ class Transaction extends Model
      */
     protected $appends = ['status_text'];
 
+    public function address()
+    {
+        return $this->hasOne(UserAddress::class, 'id', 'address_id')
+            ->withTrashed();
+    }
     /**
      * @return string
      */
