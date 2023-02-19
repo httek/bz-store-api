@@ -37,7 +37,7 @@ class Transaction extends Model
      */
     public function children()
     {
-        return $this->hasMany(self::class, 'transaction_id', 'id');
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 
     public function store()
