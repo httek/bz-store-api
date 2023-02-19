@@ -285,9 +285,9 @@ class UserTransactionController extends Controller
             return fail('该订单无法支付');
         }
 
-
+        $item->update(['paid_trade_no' => $paidTradeNo = Transaction::makeTradeNo('P')]);
         $amount = env('PAY_DEBUG') ? 1 : $item->amount ?? 0;
-        $transaction = WeChatPayService::jsApiTransaction($user->openid, $item->id, $amount);
+        $transaction = WeChatPayService::jsApiTransaction($user->openid, $item->id, $paidTradeNo, $amount);
         if (! $transaction) {
             return fail('支付失败，请重试');
         }

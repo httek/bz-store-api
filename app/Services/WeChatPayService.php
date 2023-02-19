@@ -66,6 +66,7 @@ class WeChatPayService extends Service
     public static function jsApiTransaction(
         string $openId,
         string $orderId,
+        string $paidTradeNo,
         int $amount = 1,
         string $title = '花卉绿植'
     ): ?array
@@ -73,7 +74,7 @@ class WeChatPayService extends Service
         $jsApiParams = [
             'mchid' => $partnerId = config('wechat.mini_app.default.mch_id'),
             'appid' => $appId = config('wechat.mini_app.default.app_id'),
-            'out_trade_no' => $paidTradeNo = Transaction::makeTradeNo('P'),
+            'out_trade_no' => $paidTradeNo,
             'description' => $title,
             'notify_url' => join('/', [
                 'https://bz.m.api.icraft.ltd/v1/event/wp', $orderId
@@ -137,12 +138,17 @@ class WeChatPayService extends Service
                     $payment = Payment::where('merchant_no', $partnerId)->first();
                     if (!$payload = WePayDecoder::decodeFromRequest($request, $payment)) break;
 
-                    $where = ['id' => $id, 'status' => 1];
-                    $order = Transaction::where($where)->first();
+                    $order = Transaction::find($id);
                     if (! $order) {
                         Log::warning(__METHOD__ . " => Order not found", compact('payload'));
 
                         return false;
+                    }
+
+                    if ($order->status != 1) {
+                        Log::warning(__METHOD__ . " => Order paid.", compact('payload', 'order'));
+
+                        return true;
                     }
 
                     $paidAt = Carbon::now()->toDateTimeString();
@@ -150,11 +156,10 @@ class WeChatPayService extends Service
                     $useTransaction = true;
 
                     $up = [
-                        'paid_amount' => '',
-                        'paid_trade_no' => '',
-                        'paid_amount' => '',
+                        'paid_amount' => $payload['amount']['total'],
                         'paid_at' => $paidAt,
                         'status' => 2,
+                        'paid_notifies' => $payload
                     ];
 
                     $order->update($up);

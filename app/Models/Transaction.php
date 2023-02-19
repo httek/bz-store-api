@@ -16,7 +16,7 @@ class Transaction extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = ['express' => 'json'];
+    protected $casts = ['express' => 'json', 'paid_notifies' => 'json'];
 
     /**
      * @var string[]
