@@ -3,10 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
-use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
