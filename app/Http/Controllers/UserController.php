@@ -39,6 +39,7 @@ class UserController extends Controller
 
         $item = Goods::findOrFail($validated['goods_id']);
         $validated['user_id'] = Auth::id() ?? 0;
+        $validated['ip'] = $request->ip();
         $review = UserReview::create($validated);
 
         return success($review);
