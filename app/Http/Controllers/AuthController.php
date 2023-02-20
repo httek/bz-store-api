@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
+use App\Models\User;
 use EasyWeChat\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,9 +26,9 @@ class AuthController extends Controller
             }
 
             $where = $session->only(['openid'])->toArray();
-            if (! $member = Member::where($where)->first()) {
+            if (! $member = User::where($where)->first()) {
                 $meta = $session->only(['openid', 'unionid'])->toArray();
-                $member = Member::create($meta);
+                $member = User::create($meta);
             }
 
             return success($member->withToken());

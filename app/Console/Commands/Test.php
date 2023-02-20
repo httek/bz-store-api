@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Transaction;
+use App\Services\UserService;
 use Illuminate\Console\Command;
 
 class Test extends Command
@@ -11,10 +12,6 @@ class Test extends Command
 
     public function handle()
     {
-        $item = Transaction::find(33);
-
-        foreach ($item->children as $child) {
-            dump($child->id);
-        }
+        UserService::incrementDroplet(2, 10);
     }
 }

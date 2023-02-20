@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use App\Models\Member;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,7 @@ class TokenService extends Service
      * @param int $ttl
      * @return string|null
      */
-    public static function issue(Member $user, int $ttl = 0): ?string
+    public static function issue(User $user, int $ttl = 0): ?string
     {
         try {
             $ttl = $ttl ?: config('auth.jwt.ttl', 1);

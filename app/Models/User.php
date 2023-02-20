@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\TokenService;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -13,21 +14,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email',
-    ];
+    protected $guarded = ['id'];
 
     /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
+     * @param int $ttl
+     * @return $this
      */
-    protected $hidden = [
-        'password',
-    ];
+    public function withToken(int $ttl = 0)
+    {
+        $this->setAttribute('token', TokenService::issue($this, $ttl));
+
+        return $this;
+    }
 }

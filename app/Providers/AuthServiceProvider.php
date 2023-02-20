@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\Member;
+use App\Models\User;
 use App\Models\User;
 use App\Services\TokenService;
 use Illuminate\Http\Request;
@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider
             if ($token && !TokenService::invalid($token)) {
                 $uId = TokenService::getPayloads($token, 'jti');
 
-                return Member::find($uId);
+                return User::find($uId);
             }
         });
     }
