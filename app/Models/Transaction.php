@@ -21,7 +21,15 @@ class Transaction extends Model
     /**
      * @var string[]
      */
-    protected $appends = ['status_text'];
+    protected $appends = ['status_text', 'review'];
+
+    /**
+     * @return mixed
+     */
+    public function getReviewAttribute()
+    {
+        return $this->items()->where('review', 0)->count();
+    }
 
     public function address()
     {

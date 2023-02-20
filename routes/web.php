@@ -23,6 +23,10 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('code2session',  'AuthController@code2session');
 });
 
+$router->group(['prefix' => 'util', 'middleware' => 'auth'], function () use ($router) {
+    $router->post('upload', 'UtilController@upload');
+});
+
 $router->group(['prefix' => '/', 'middleware' => 'auth'], function () use ($router) {
     $router->get('categories', 'DefaultController@categories');
     $router->get('categories/{id}', 'DefaultController@childCategories');
@@ -33,6 +37,7 @@ $router->group(['prefix' => '/', 'middleware' => 'auth'], function () use ($rout
 
     $router->get('goods', 'GoodsController@index');
     $router->get('goods/{id:[\d]+}', 'GoodsController@show');
+    $router->post('goods/{id:[\d]+}/review', 'GoodsController@review');
 });
 
 
@@ -61,6 +66,7 @@ $router->group(['prefix' => 'me', 'middleware' => 'auth'], function () use ($rou
         $router->delete('{id:[\d]+}', 'UserTransactionController@destroy');
         $router->post('{id:[\d]+}', 'UserTransactionController@update');
         $router->get('{id:[\d]+}/pay', 'UserTransactionController@toPay');
+        $router->get('{id:[\d]+}/review', 'UserTransactionController@review');
     });
 
     $router->group(['prefix' => 'favorite'], function () use ($router) {

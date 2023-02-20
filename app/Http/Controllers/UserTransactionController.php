@@ -308,4 +308,21 @@ class UserTransactionController extends Controller
 
         return success($results);
     }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function review(Request $request, int $id)
+    {
+        $item = Transaction::with(['items'])
+            ->whereUserId(Auth::id() ?? 0)
+            ->whereId($id)
+            ->firstOrFail();
+
+        $items = $item->items()->where('review', 0)->get();
+
+        return success($items);
+    }
 }

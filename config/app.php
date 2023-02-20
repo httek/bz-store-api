@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'cdn_url' => 'https://fs.assets.icraft.ltd',
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

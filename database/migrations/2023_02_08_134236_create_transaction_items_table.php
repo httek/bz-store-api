@@ -20,6 +20,7 @@ class CreateTransactionItemsTable extends Migration
             $table->unsignedBigInteger('goods_id')->index();
             $table->unsignedInteger('sale_price')->default(0)->comment('售出商品单价');
             $table->unsignedTinyInteger('total')->default(1);
+            $table->unsignedTinyInteger('review')->default(0);
             $table->json('goods')->nullable();
             $table->timestamps();
         });

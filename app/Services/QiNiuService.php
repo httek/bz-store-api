@@ -25,7 +25,7 @@ class QiNiuService extends Service
         $filePath = "{$directory}/{$name}." . $extension;
         $uploaded = [
             'file' => $file->getClientOriginalName(), 'hash' => '',
-            'domain' => config('services.7ox.storage.host'),
+            'domain' => $domain = config('services.7ox.storage.host'),
             'error' => '', 'success' => true, 'resource' => $cdn . $filePath,
         ];
 
