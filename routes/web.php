@@ -37,12 +37,12 @@ $router->group(['prefix' => '/', 'middleware' => 'auth'], function () use ($rout
 
     $router->get('goods', 'GoodsController@index');
     $router->get('goods/{id:[\d]+}', 'GoodsController@show');
-    $router->post('goods/{id:[\d]+}/review', 'GoodsController@review');
 });
 
 
 $router->group(['prefix' => 'me', 'middleware' => 'auth'], function () use ($router) {
     $router->get('profile', 'UserController@profile');
+    $router->post('review', 'UserController@goodsReview');
     $router->group(['prefix' => 'cart'], function () use ($router) {
         $router->get('', 'UserCartController@index');
         $router->get('calc/{id}', 'UserCartController@calc');
