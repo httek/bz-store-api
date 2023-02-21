@@ -7,6 +7,7 @@ use App\Models\Goods;
 use App\Http\Requests\Goods\Search;
 use App\Models\UserFavorite;
 use App\Models\UserHistory;
+use App\Models\UserReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -72,5 +73,23 @@ class GoodsController extends Controller
         UserHistory::firstOrCreate($favorite);
 
         return success($item);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function review(Request $request, int $id)
+    {
+        $where = ['goods_id' => $id];
+        $items = UserReview::where($where)
+            ->with(['user'])
+            ->latest('star')
+            ->latest('id')
+            ->latest('images')
+            ->paginate($this->getPageSize());
+
+        return success($items);
     }
 }

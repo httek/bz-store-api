@@ -37,6 +37,7 @@ $router->group(['prefix' => '/', 'middleware' => 'auth'], function () use ($rout
 
     $router->get('goods', 'GoodsController@index');
     $router->get('goods/{id:[\d]+}', 'GoodsController@show');
+    $router->get('goods/{id:[\d]+}/review', 'GoodsController@review');
 });
 
 

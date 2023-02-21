@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserReview extends Model
 {
+    protected $guarded = ['id'];
+
     protected $casts = ['images' => 'json'];
 
     public function user()

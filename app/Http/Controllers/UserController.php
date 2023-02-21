@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Goods;
+use App\Models\TransactionItem;
 use App\Models\UserReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,8 @@ class UserController extends Controller
         $validated['user_id'] = Auth::id() ?? 0;
         $validated['ip'] = $request->ip();
         $review = UserReview::create($validated);
+        $where = ['transaction_id' => $request->input('transaction_id', 0), 'goods_id' => $validated['goods_id']];
+        TransactionItem::where($where)->update(['review' => 1]);
 
         return success($review);
     }
