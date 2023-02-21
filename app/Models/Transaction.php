@@ -42,7 +42,7 @@ class Transaction extends Model
     public function getStatusTextAttribute()
     {
         // 0 已取消 1 待支付，2 待发货 3 待收货 4 待评价
-        return ['已取消', '待支付', '待发货', '待收货', '待评价'][$this->getAttributeValue('status')] ?? '-';
+        return ['已取消', '待支付', '待发货', '待收货', '已完成'][$this->getAttributeValue('status')] ?? '-';
     }
 
     /**
