@@ -7,6 +7,7 @@ use App\Models\BlockResource;
 use App\Models\Category;
 use App\Models\Config;
 use App\Models\Goods;
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -71,12 +72,9 @@ class DefaultController extends Controller
      */
     public function blocks(Request $request)
     {
-        $where = ['position' => $request->input('position', 0), 'status' => 1];
-        $items  = Block::where($where)
-            ->where(function (Builder $query) {
-                $query->whereNull('deadline_at')
-                    ->orWhereRaw(DB::raw("deadline_at > NOW()"));
-            })
+        $where = [];
+        $items  = Tag::where($where)
+            ->whereNav(1)
             ->latest('sequence')
             ->get();
 
@@ -92,18 +90,19 @@ class DefaultController extends Controller
         /** @var LengthAwarePaginator $items */
 
         $items = Goods::with([])
-            ->leftJoin('block_resources', 'goods.id', '=', 'block_resources.subject')
             ->select([
                 'goods.id',
                 'goods.name',
                 'goods.sale_price',
+                'goods.origin_price',
+                'goods.badge',
                 'goods.covers',
                 'goods.store_id',
                 'goods.slogan',
                 'goods.material',
             ])
-            ->latest('block_resources.sequence')
-            ->where('block_resources.block_id', $id)
+            ->latest('goods.sequence')
+            ->whereRaw(DB::raw("JSON_CONTAINS(tags, '{$id}', '$')"))
             ->paginate($this->getPageSize());
 
         return success($items);
