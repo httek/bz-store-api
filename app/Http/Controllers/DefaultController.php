@@ -7,6 +7,7 @@ use App\Models\BlockResource;
 use App\Models\Category;
 use App\Models\Config;
 use App\Models\Goods;
+use App\Models\Nav;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -33,9 +34,16 @@ class DefaultController extends Controller
      */
     public function navs(Request $request): JsonResponse
     {
-        $navs = Config::where('key', 'nav.home')->first();
+        $navs = Nav::latest('sequence')
+            ->get();
 
-        return success($navs->value ?? []);
+        $result = [];
+        $groups = Nav::$groups;
+        foreach ($navs->groupBy('style') as $g => $items) {
+            $result[$groups[$g] ?? 'other'] = $items;
+        }
+
+        return success($result);
     }
 
     /**
